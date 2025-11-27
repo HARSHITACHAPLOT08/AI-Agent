@@ -8,7 +8,7 @@ import tunix
 from tunix.models import GemmaConfig, GemmaModel
 from flax.training import train_state
 
-# Configuration
+
 BATCH_SIZE = 8
 LEARNING_RATE = 5e-5
 NUM_EPOCHS = 3
@@ -59,7 +59,7 @@ def main():
     model = GemmaModel(config)
     tokenizer = tunix.AutoTokenizer.from_pretrained(MODEL_NAME)
     
-    # Initialize State
+    
     # FIX 1: Initialize parameters properly (Random init shown here; check Tunix docs for pretrained loading)
     print("Initializing model parameters...")
     key = jax.random.PRNGKey(0)
@@ -70,11 +70,9 @@ def main():
     tx = optax.adamw(LEARNING_RATE)
     state = train_state.TrainState.create(apply_fn=model.apply, params=params, tx=tx)
     
-    # Load Data
     data = load_data("math_reasoning_data.jsonl")
     print(f"Loaded {len(data)} training samples.")
     
-    # Training Loop
     for epoch in range(NUM_EPOCHS):
         print(f"Starting Epoch {epoch + 1}/{NUM_EPOCHS}")
         for i in range(0, len(data), BATCH_SIZE):
@@ -84,7 +82,6 @@ def main():
             if i % 10 == 0:
                 print(f"  Step {i}, Loss: {loss:.4f}")
                 
-    # Save Model
     print("Saving model to checkpoints/best_model...")
     # FIX 2: Correct indentation
     tunix.save_checkpoint("checkpoints/best_model", state.params)
